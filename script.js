@@ -70,8 +70,8 @@ const state = {
     name: "",
     email: "",
     age: "",
-    gender: ""
-  }
+    gender: "",
+  },
 };
 
 const DOM = {
@@ -211,7 +211,14 @@ function savePage(p) {
 }
 function loadProfile() {
   try {
-    return JSON.parse(localStorage.getItem(PROFILE_KEY)) || { name: "", email: "", age: "", gender: "" };
+    return (
+      JSON.parse(localStorage.getItem(PROFILE_KEY)) || {
+        name: "",
+        email: "",
+        age: "",
+        gender: "",
+      }
+    );
   } catch (e) {
     return { name: "", email: "", age: "", gender: "" };
   }
@@ -225,9 +232,20 @@ function saveProfile(p) {
 }
 function loadUsers() {
   try {
-    return JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+    const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+    if (users.length === 0) {
+      users.push({
+        name: "Demo User",
+        email: "user@example.com",
+        password: "password123",
+      });
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+    return users;
   } catch (e) {
-    return [];
+    return [
+      { name: "Demo User", email: "user@example.com", password: "password123" },
+    ];
   }
 }
 function saveUsers(users) {
@@ -603,10 +621,7 @@ function applyTheme(theme) {
 function switchTheme(theme) {
   applyTheme(theme);
   saveTheme(theme);
-  showToast(
-    `${theme === "dark" ? "Dark" : "Light"} mode enabled.`,
-    "info",
-  );
+  showToast(`${theme === "dark" ? "Dark" : "Light"} mode enabled.`, "info");
 }
 
 const PAGE_MAP = {
@@ -732,7 +747,12 @@ function formatTime(ts) {
 
 function getGreeting() {
   const session = loadSession();
-  const name = session && session.name ? session.name.trim() : (state.profile && state.profile.name ? state.profile.name.trim() : "User");
+  const name =
+    session && session.name
+      ? session.name.trim()
+      : state.profile && state.profile.name
+        ? state.profile.name.trim()
+        : "User";
   return `Hello, ${name}!`;
 }
 
@@ -805,7 +825,7 @@ function handleSignup(e) {
   }
 
   const users = loadUsers();
-  if (users.some(u => u.email === email)) {
+  if (users.some((u) => u.email === email)) {
     showToast("An account with this email already exists.", "error");
     return;
   }
@@ -833,7 +853,9 @@ function handleLogin(e) {
   }
 
   const users = loadUsers();
-  const matched = users.find(u => u.email === email && u.password === password);
+  const matched = users.find(
+    (u) => u.email === email && u.password === password,
+  );
 
   if (!matched) {
     showToast("Invalid email or password.", "error");
@@ -842,12 +864,51 @@ function handleLogin(e) {
 
   state.profile = loadProfile();
   if (!state.profile || !state.profile.name) {
-    state.profile = { name: matched.name, email: matched.email, age: "", gender: "" };
+    state.profile = {
+      name: matched.name,
+      email: matched.email,
+      age: "",
+      gender: "",
+    };
     saveProfile(state.profile);
   }
-  saveSession({ name: state.profile.name || matched.name, email: matched.email });
+  saveSession({
+    name: state.profile.name || matched.name,
+    email: matched.email,
+  });
 
   showToast("Welcome back!", "success");
+  enterDashboard();
+}
+
+function handleDemoLogin() {
+  const email = "user@example.com";
+  const password = "password123";
+
+  const users = loadUsers();
+  let matched = users.find((u) => u.email === email);
+  if (!matched) {
+    matched = { name: "Demo User", email, password };
+    users.push(matched);
+    saveUsers(users);
+  }
+
+  state.profile = loadProfile();
+  if (!state.profile || !state.profile.name) {
+    state.profile = {
+      name: matched.name,
+      email: matched.email,
+      age: "",
+      gender: "",
+    };
+    saveProfile(state.profile);
+  }
+  saveSession({
+    name: state.profile.name || matched.name,
+    email: matched.email,
+  });
+
+  showToast("Logged in with Demo Account!", "success");
   enterDashboard();
 }
 
@@ -903,11 +964,11 @@ function attachEvents() {
     }
   });
 
-  // Theme (sidebar)
-  if (DOM.themeBtnLight) DOM.themeBtnLight.addEventListener("click", () => switchTheme("light"));
-  if (DOM.themeBtnDark) DOM.themeBtnDark.addEventListener("click", () => switchTheme("dark"));
+  if (DOM.themeBtnLight)
+    DOM.themeBtnLight.addEventListener("click", () => switchTheme("light"));
+  if (DOM.themeBtnDark)
+    DOM.themeBtnDark.addEventListener("click", () => switchTheme("dark"));
 
-  // Theme (topbar)
   if (DOM.themeToggleBtnTop) {
     DOM.themeToggleBtnTop.addEventListener("click", () => {
       const cur = document.documentElement.getAttribute("data-theme") || "dark";
@@ -915,19 +976,16 @@ function attachEvents() {
     });
   }
 
-  // Sidebar collapse
-  if (DOM.sidebarCollapseBtn) DOM.sidebarCollapseBtn.addEventListener("click", toggleSidebarCollapse);
+  if (DOM.sidebarCollapseBtn)
+    DOM.sidebarCollapseBtn.addEventListener("click", toggleSidebarCollapse);
 
-  // Mobile menu
   DOM.mobileMenuBtn.addEventListener("click", openMobileSidebar);
   DOM.sidebarOverlay.addEventListener("click", closeMobileSidebar);
 
-  // Nav items → page switching
   Object.entries(NAV_MAP).forEach(([page, btn]) => {
     if (btn) btn.addEventListener("click", () => navigateTo(page));
   });
 
-  // Notification bell
   if (DOM.notifBtn) {
     DOM.notifBtn.addEventListener("click", () => {
       const pending = state.tasks.filter((t) => !t.completed).length;
@@ -940,13 +998,11 @@ function attachEvents() {
     });
   }
 
-  // Filter tabs (dashboard)
   DOM.filterAll.addEventListener("click", () => setFilter("all"));
   DOM.filterPending.addEventListener("click", () => setFilter("pending"));
   DOM.filterCompleted.addEventListener("click", () => setFilter("completed"));
   DOM.clearCompleted.addEventListener("click", clearCompletedTasks);
 
-  // Filter tabs (tasks page)
   if (DOM.filterAll2)
     DOM.filterAll2.addEventListener("click", () => setFilter("all"));
   if (DOM.filterPending2)
@@ -958,12 +1014,10 @@ function attachEvents() {
   if (DOM.clearCompleted2)
     DOM.clearCompleted2.addEventListener("click", clearCompletedTasks);
 
-  // Search (both)
   DOM.searchInput.addEventListener("input", handleSearch);
   if (DOM.searchInput2)
     DOM.searchInput2.addEventListener("input", handleSearch);
 
-  // Settings: clear all data
   if (DOM.clearAllDataBtn)
     DOM.clearAllDataBtn.addEventListener("click", clearAllData);
 
@@ -978,14 +1032,16 @@ function attachEvents() {
     DOM.showLoginBtn.addEventListener("click", () => toggleAuthForms(false));
 
   // Auth Form submissions
-  if (DOM.signupForm)
-    DOM.signupForm.addEventListener("submit", handleSignup);
-  if (DOM.loginForm)
-    DOM.loginForm.addEventListener("submit", handleLogin);
+  if (DOM.signupForm) DOM.signupForm.addEventListener("submit", handleSignup);
+  if (DOM.loginForm) DOM.loginForm.addEventListener("submit", handleLogin);
+
+  const demoLoginBtn = document.getElementById("demoLoginBtn");
+  if (demoLoginBtn) {
+    demoLoginBtn.addEventListener("click", handleDemoLogin);
+  }
 
   // Logout button
-  if (DOM.logoutBtn)
-    DOM.logoutBtn.addEventListener("click", handleLogout);
+  if (DOM.logoutBtn) DOM.logoutBtn.addEventListener("click", handleLogout);
 
   // Resize → close mobile sidebar
   window.addEventListener("resize", () => {

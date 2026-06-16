@@ -252,6 +252,80 @@
                   <button class="filter-tab" data-filter="completed" role="tab" aria-selected="false"
                     id="filterCompleted">
                     Completed
+            <section class="add-task-panel" aria-label="Add new task">
+              <div class="panel-header">
+                <h2 class="panel-title">
+                  <i class="fa-solid fa-circle-plus" aria-hidden="true"></i>
+                  Add New Task
+                </h2>
+              </div>
+
+              <form class="task-form" id="taskForm" novalidate>
+                <div class="task-form-container">
+                  <div class="input-wrap field-name">
+                    <i
+                      class="fa-solid fa-pen-nib field-icon"
+                      aria-hidden="true"
+                    ></i>
+                    <input
+                      type="text"
+                      id="taskInput"
+                      class="form-input"
+                      placeholder="What do you want to accomplish today?"
+                      maxlength="150"
+                      autocomplete="off"
+                      aria-label="New task name"
+                      aria-required="true"
+                      aria-describedby="charCountId errorMsgId"
+                    />
+                    <span class="char-count" id="charCount" aria-live="polite"
+                      >0/150</span
+                    >
+                  </div>
+
+                  <div class="select-wrap">
+                    <i
+                      class="fa-solid fa-tag field-icon"
+                      aria-hidden="true"
+                    ></i>
+                    <select
+                      id="taskCategory"
+                      class="form-select"
+                      aria-label="Task category"
+                    >
+                      <option value="general">📋 General</option>
+                      <option value="health">💪 Health</option>
+                      <option value="work">💼 Work</option>
+                      <option value="study">📚 Study</option>
+                      <option value="personal">🏠 Personal</option>
+                      <option value="errands">🛒 Errands</option>
+                    </select>
+                  </div>
+
+                  <div class="select-wrap">
+                    <i
+                      class="fa-solid fa-flag field-icon"
+                      aria-hidden="true"
+                    ></i>
+                    <select
+                      id="taskPriority"
+                      class="form-select"
+                      aria-label="Task priority"
+                    >
+                      <option value="medium">🟡 Medium</option>
+                      <option value="high">🔴 High</option>
+                      <option value="low">🟢 Low</option>
+                    </select>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="add-btn"
+                    id="addTaskBtn"
+                    aria-label="Add task"
+                  >
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                    <span>Add Task</span>
                   </button>
                 </div>
                 <button class="clear-done-btn" id="clearCompleted" aria-label="Clear all completed tasks">
@@ -511,6 +585,8 @@
         <button type="submit" class="auth-btn-submit" id="loginBtn">Log In</button>
         <p class="auth-toggle-text">Don't have an account? <button type="button" class="auth-toggle-btn"
             id="showSignupBtn">Sign up for free</button></p>
+        <p class="auth-toggle-text" style="margin-top: 8px; font-size: 0.76rem; opacity: 0.85;">Want to test? <button type="button" class="auth-toggle-btn"
+            id="demoLoginBtn">Log in with Demo Account</button></p>
       </form>
 
       <form id="signupForm" class="auth-form" novalidate>
