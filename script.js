@@ -66,36 +66,30 @@ const state = {
 };
 
 const DOM = {
-  // Shell & Sidebar
   appShell: document.getElementById("appShell"),
   sidebar: document.getElementById("sidebar"),
   sidebarOverlay: document.getElementById("sidebarOverlay"),
   sidebarCollapseBtn: document.getElementById("sidebarCollapseBtn"),
   mobileMenuBtn: document.getElementById("mobileMenuBtn"),
 
-  // Nav items
   navDashboard: document.getElementById("navDashboard"),
   navTasks: document.getElementById("navTasks"),
   navCategories: document.getElementById("navCategories"),
   navStatistics: document.getElementById("navStatistics"),
   navSettings: document.getElementById("navSettings"),
 
-  // Nav badges
   navBadgeTotal: document.getElementById("navBadgeTotal"),
   navBadgePending: document.getElementById("navBadgePending"),
 
-  // Page panels
   pageDashboard: document.getElementById("pageDashboard"),
   pageTasks: document.getElementById("pageTasks"),
   pageCategories: document.getElementById("pageCategories"),
   pageStatistics: document.getElementById("pageStatistics"),
   pageSettings: document.getElementById("pageSettings"),
 
-  // Quote
   quoteText: document.getElementById("quoteText"),
   quoteAuthor: document.getElementById("quoteAuthor"),
 
-  // Theme
   themeBtnLight: document.getElementById("themeBtnLight"),
   themeBtnDark: document.getElementById("themeBtnDark"),
   themeToggleBtnTop: document.getElementById("themeToggleBtnTop"),
