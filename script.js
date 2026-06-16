@@ -95,13 +95,11 @@ const DOM = {
   themeToggleBtnTop: document.getElementById("themeToggleBtnTop"),
   themeToggleIconTop: document.getElementById("themeToggleIconTop"),
 
-  // Topbar
   greetingTitle: document.getElementById("greetingTitle"),
   dateText: document.getElementById("dateText"),
   notifBtn: document.getElementById("notifBtn"),
   notifDot: document.getElementById("notifDot"),
 
-  // Stats (dashboard)
   totalCount: document.getElementById("totalCount"),
   completedCount: document.getElementById("completedCount"),
   pendingCount: document.getElementById("pendingCount"),
@@ -109,7 +107,6 @@ const DOM = {
   progressBar: document.getElementById("progressBarTrack"),
   progressPct: document.getElementById("progressPercent"),
 
-  // Stats (statistics page)
   totalCountStats: document.getElementById("totalCountStats"),
   completedCountStats: document.getElementById("completedCountStats"),
   pendingCountStats: document.getElementById("pendingCountStats"),
