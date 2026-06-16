@@ -123,38 +123,30 @@ const DOM = {
   charCount: document.getElementById("charCount"),
   errorMsg: document.getElementById("errorMsgId"),
 
-  // Task list (dashboard)
   taskList: document.getElementById("taskList"),
   emptyState: document.getElementById("emptyState"),
   searchInput: document.getElementById("searchInput"),
 
-  // Task list (tasks page)
   taskList2: document.getElementById("taskList2"),
   emptyState2: document.getElementById("emptyState2"),
   searchInput2: document.getElementById("searchInput2"),
 
-  // Filter tabs (dashboard)
   filterAll: document.getElementById("filterAll"),
   filterPending: document.getElementById("filterPending"),
   filterCompleted: document.getElementById("filterCompleted"),
   clearCompleted: document.getElementById("clearCompleted"),
 
-  // Filter tabs (tasks page)
   filterAll2: document.getElementById("filterAll2"),
   filterPending2: document.getElementById("filterPending2"),
   filterCompleted2: document.getElementById("filterCompleted2"),
   clearCompleted2: document.getElementById("clearCompleted2"),
 
-  // Category breakdown
   categoryBreakdown: document.getElementById("categoryBreakdown"),
 
-  // Settings
   clearAllDataBtn: document.getElementById("clearAllDataBtn"),
-
-  // Footer
+Footer
   footerYear: document.getElementById("footerYear"),
 
-  // Toasts
   toastContainer: document.getElementById("toastContainer"),
 };
 
@@ -517,7 +509,6 @@ function setFilter(filter) {
 let searchTimer = null;
 function handleSearch(e) {
   clearTimeout(searchTimer);
-  // Sync both search inputs
   if (DOM.searchInput && DOM.searchInput !== e.target)
     DOM.searchInput.value = e.target.value;
   if (DOM.searchInput2 && DOM.searchInput2 !== e.target)
@@ -717,11 +708,9 @@ function attachEvents() {
     }
   });
 
-  // Theme (sidebar)
   if (DOM.themeBtnLight) DOM.themeBtnLight.addEventListener("click", () => switchTheme("light"));
   if (DOM.themeBtnDark) DOM.themeBtnDark.addEventListener("click", () => switchTheme("dark"));
 
-  // Theme (topbar)
   if (DOM.themeToggleBtnTop) {
     DOM.themeToggleBtnTop.addEventListener("click", () => {
       const cur = document.documentElement.getAttribute("data-theme") || "dark";
@@ -729,19 +718,15 @@ function attachEvents() {
     });
   }
 
-  // Sidebar collapse
   if (DOM.sidebarCollapseBtn) DOM.sidebarCollapseBtn.addEventListener("click", toggleSidebarCollapse);
 
-  // Mobile menu
   DOM.mobileMenuBtn.addEventListener("click", openMobileSidebar);
   DOM.sidebarOverlay.addEventListener("click", closeMobileSidebar);
 
-  // Nav items → page switching
   Object.entries(NAV_MAP).forEach(([page, btn]) => {
     if (btn) btn.addEventListener("click", () => navigateTo(page));
   });
 
-  // Notification bell
   if (DOM.notifBtn) {
     DOM.notifBtn.addEventListener("click", () => {
       const pending = state.tasks.filter((t) => !t.completed).length;
@@ -754,13 +739,11 @@ function attachEvents() {
     });
   }
 
-  // Filter tabs (dashboard)
   DOM.filterAll.addEventListener("click", () => setFilter("all"));
   DOM.filterPending.addEventListener("click", () => setFilter("pending"));
   DOM.filterCompleted.addEventListener("click", () => setFilter("completed"));
   DOM.clearCompleted.addEventListener("click", clearCompletedTasks);
 
-  // Filter tabs (tasks page)
   if (DOM.filterAll2)
     DOM.filterAll2.addEventListener("click", () => setFilter("all"));
   if (DOM.filterPending2)
@@ -772,32 +755,26 @@ function attachEvents() {
   if (DOM.clearCompleted2)
     DOM.clearCompleted2.addEventListener("click", clearCompletedTasks);
 
-  // Search (both)
   DOM.searchInput.addEventListener("input", handleSearch);
   if (DOM.searchInput2)
     DOM.searchInput2.addEventListener("input", handleSearch);
 
-  // Settings: clear all data
   if (DOM.clearAllDataBtn)
     DOM.clearAllDataBtn.addEventListener("click", clearAllData);
 
-  // Resize → close mobile sidebar
   window.addEventListener("resize", () => {
     if (window.innerWidth > 768) closeMobileSidebar();
   });
 }
 
 function init() {
-  // Apply saved theme
+
   applyTheme(loadTheme());
 
-  // Restore sidebar collapse state
   if (loadSidebarState()) DOM.appShell.classList.add("sidebar-collapsed");
 
-  // Load tasks
   state.tasks = loadTasks();
 
-  // Initial render
   renderAllTaskLists();
   updateStats();
   updateGreeting();
@@ -805,19 +782,15 @@ function init() {
   displayRandomQuote();
   setFooterYear();
 
-  // Restore last active page
   navigateTo(loadPage() || "dashboard");
 
-  // Attach all event listeners
   attachEvents();
 
-  // Auto-refresh greeting & date every minute
   setInterval(() => {
     updateGreeting();
     updateDate();
   }, 60_000);
 
-  // Rotate quotes every 30s
   setInterval(displayRandomQuote, 30_000);
 
   console.info(
@@ -827,7 +800,6 @@ function init() {
   );
 }
 
-// Boot
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", init);
 } else {
