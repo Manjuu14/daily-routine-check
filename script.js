@@ -4,6 +4,9 @@ const STORAGE_KEY = "dailyRoutine_tasks";
 const THEME_KEY = "dailyRoutine_theme";
 const SIDEBAR_KEY = "dailyRoutine_sidebar";
 const PAGE_KEY = "dailyRoutine_page";
+const PROFILE_KEY = "dailyRoutine_profile";
+const USERS_KEY = "dailyRoutine_users";
+const SESSION_KEY = "dailyRoutine_session";
 
 const CATEGORY_LABELS = {
   general: "General",
@@ -63,51 +66,49 @@ const state = {
   filter: "all",
   searchQuery: "",
   currentPage: "dashboard",
+  profile: {
+    name: "",
+    email: "",
+    age: "",
+    gender: ""
+  }
 };
 
 const DOM = {
-  // Shell & Sidebar
   appShell: document.getElementById("appShell"),
   sidebar: document.getElementById("sidebar"),
   sidebarOverlay: document.getElementById("sidebarOverlay"),
   sidebarCollapseBtn: document.getElementById("sidebarCollapseBtn"),
   mobileMenuBtn: document.getElementById("mobileMenuBtn"),
 
-  // Nav items
   navDashboard: document.getElementById("navDashboard"),
   navTasks: document.getElementById("navTasks"),
   navCategories: document.getElementById("navCategories"),
   navStatistics: document.getElementById("navStatistics"),
   navSettings: document.getElementById("navSettings"),
 
-  // Nav badges
   navBadgeTotal: document.getElementById("navBadgeTotal"),
   navBadgePending: document.getElementById("navBadgePending"),
 
-  // Page panels
   pageDashboard: document.getElementById("pageDashboard"),
   pageTasks: document.getElementById("pageTasks"),
   pageCategories: document.getElementById("pageCategories"),
   pageStatistics: document.getElementById("pageStatistics"),
   pageSettings: document.getElementById("pageSettings"),
 
-  // Quote
   quoteText: document.getElementById("quoteText"),
   quoteAuthor: document.getElementById("quoteAuthor"),
 
-  // Theme
   themeBtnLight: document.getElementById("themeBtnLight"),
   themeBtnDark: document.getElementById("themeBtnDark"),
   themeToggleBtnTop: document.getElementById("themeToggleBtnTop"),
   themeToggleIconTop: document.getElementById("themeToggleIconTop"),
 
-  // Topbar
   greetingTitle: document.getElementById("greetingTitle"),
   dateText: document.getElementById("dateText"),
   notifBtn: document.getElementById("notifBtn"),
   notifDot: document.getElementById("notifDot"),
 
-  // Stats (dashboard)
   totalCount: document.getElementById("totalCount"),
   completedCount: document.getElementById("completedCount"),
   pendingCount: document.getElementById("pendingCount"),
@@ -115,7 +116,6 @@ const DOM = {
   progressBar: document.getElementById("progressBarTrack"),
   progressPct: document.getElementById("progressPercent"),
 
-  // Stats (statistics page)
   totalCountStats: document.getElementById("totalCountStats"),
   completedCountStats: document.getElementById("completedCountStats"),
   pendingCountStats: document.getElementById("pendingCountStats"),
@@ -123,7 +123,6 @@ const DOM = {
   progressBarStats: document.getElementById("progressBarTrackStats"),
   progressPctStats: document.getElementById("progressPercentStats"),
 
-  // Form
   taskForm: document.getElementById("taskForm"),
   taskInput: document.getElementById("taskInput"),
   taskCategory: document.getElementById("taskCategory"),
@@ -132,38 +131,49 @@ const DOM = {
   charCount: document.getElementById("charCount"),
   errorMsg: document.getElementById("errorMsgId"),
 
-  // Task list (dashboard)
   taskList: document.getElementById("taskList"),
   emptyState: document.getElementById("emptyState"),
   searchInput: document.getElementById("searchInput"),
 
-  // Task list (tasks page)
   taskList2: document.getElementById("taskList2"),
   emptyState2: document.getElementById("emptyState2"),
   searchInput2: document.getElementById("searchInput2"),
 
-  // Filter tabs (dashboard)
   filterAll: document.getElementById("filterAll"),
   filterPending: document.getElementById("filterPending"),
   filterCompleted: document.getElementById("filterCompleted"),
   clearCompleted: document.getElementById("clearCompleted"),
 
-  // Filter tabs (tasks page)
   filterAll2: document.getElementById("filterAll2"),
   filterPending2: document.getElementById("filterPending2"),
   filterCompleted2: document.getElementById("filterCompleted2"),
   clearCompleted2: document.getElementById("clearCompleted2"),
 
-  // Category breakdown
   categoryBreakdown: document.getElementById("categoryBreakdown"),
 
-  // Settings
   clearAllDataBtn: document.getElementById("clearAllDataBtn"),
+  settingsForm: document.getElementById("settingsForm"),
+  settingsName: document.getElementById("settingsName"),
+  settingsMail: document.getElementById("settingsMail"),
+  settingsAge: document.getElementById("settingsAge"),
+  settingsGender: document.getElementById("settingsGender"),
 
-  // Footer
+  authPage: document.getElementById("authPage"),
+  loginForm: document.getElementById("loginForm"),
+  loginEmail: document.getElementById("loginEmail"),
+  loginPassword: document.getElementById("loginPassword"),
+  signupForm: document.getElementById("signupForm"),
+  signupName: document.getElementById("signupName"),
+  signupEmail: document.getElementById("signupEmail"),
+  signupPassword: document.getElementById("signupPassword"),
+  showSignupBtn: document.getElementById("showSignupBtn"),
+  showLoginBtn: document.getElementById("showLoginBtn"),
+  logoutBtn: document.getElementById("logoutBtn"),
+  authTitle: document.getElementById("authTitle"),
+  authSubtitle: document.getElementById("authSubtitle"),
+
   footerYear: document.getElementById("footerYear"),
 
-  // Toasts
   toastContainer: document.getElementById("toastContainer"),
 };
 
@@ -199,6 +209,44 @@ function loadPage() {
 function savePage(p) {
   localStorage.setItem(PAGE_KEY, p);
 }
+function loadProfile() {
+  try {
+    return JSON.parse(localStorage.getItem(PROFILE_KEY)) || { name: "", email: "", age: "", gender: "" };
+  } catch (e) {
+    return { name: "", email: "", age: "", gender: "" };
+  }
+}
+function saveProfile(p) {
+  try {
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(p));
+  } catch (e) {
+    showToast("Could not save profile settings.", "error");
+  }
+}
+function loadUsers() {
+  try {
+    return JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+  } catch (e) {
+    return [];
+  }
+}
+function saveUsers(users) {
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+}
+function loadSession() {
+  try {
+    return JSON.parse(localStorage.getItem(SESSION_KEY)) || null;
+  } catch (e) {
+    return null;
+  }
+}
+function saveSession(session) {
+  if (session) {
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  } else {
+    localStorage.removeItem(SESSION_KEY);
+  }
+}
 
 function uid() {
   return `t_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
@@ -229,8 +277,8 @@ function toggleTask(id) {
   updateStats();
   showToast(
     task.completed
-      ? `✅ "${truncate(task.name, 28)}" completed!`
-      : `↩️ "${truncate(task.name, 28)}" marked pending.`,
+      ? `"${truncate(task.name, 28)}" completed!`
+      : `"${truncate(task.name, 28)}" marked pending.`,
     task.completed ? "success" : "info",
   );
 }
@@ -265,7 +313,7 @@ function clearCompletedTasks() {
     renderAllTaskLists();
     updateStats();
     showToast(
-      `${done.length} completed task${done.length > 1 ? "s" : ""} cleared. 🗑️`,
+      `${done.length} completed task${done.length > 1 ? "s" : ""} cleared.`,
       "success",
     );
   }, 340);
@@ -444,7 +492,7 @@ function renderCategoryBreakdown() {
 }
 
 function showError(msg) {
-  DOM.errorMsg.textContent = msg ? `⚠️  ${msg}` : "";
+  DOM.errorMsg.textContent = msg ? `  ${msg}` : "";
   DOM.errorMsg.classList.toggle("visible", Boolean(msg));
 }
 
@@ -526,7 +574,6 @@ function setFilter(filter) {
 let searchTimer = null;
 function handleSearch(e) {
   clearTimeout(searchTimer);
-  // Sync both search inputs
   if (DOM.searchInput && DOM.searchInput !== e.target)
     DOM.searchInput.value = e.target.value;
   if (DOM.searchInput2 && DOM.searchInput2 !== e.target)
@@ -557,7 +604,7 @@ function switchTheme(theme) {
   applyTheme(theme);
   saveTheme(theme);
   showToast(
-    `${theme === "dark" ? "🌙 Dark" : "☀️ Light"} mode enabled.`,
+    `${theme === "dark" ? "Dark" : "Light"} mode enabled.`,
     "info",
   );
 }
@@ -684,11 +731,141 @@ function formatTime(ts) {
 }
 
 function getGreeting() {
-  return "Hello, User! 👋";
+  const session = loadSession();
+  const name = session && session.name ? session.name.trim() : (state.profile && state.profile.name ? state.profile.name.trim() : "User");
+  return `Hello, ${name}!`;
 }
 
 function updateGreeting() {
   DOM.greetingTitle.textContent = getGreeting();
+}
+
+function populateProfileInputs() {
+  if (DOM.settingsName) DOM.settingsName.value = state.profile.name || "";
+  if (DOM.settingsMail) DOM.settingsMail.value = state.profile.email || "";
+  if (DOM.settingsAge) DOM.settingsAge.value = state.profile.age || "";
+  if (DOM.settingsGender) DOM.settingsGender.value = state.profile.gender || "";
+}
+
+function handleSettingsSubmit(e) {
+  e.preventDefault();
+  const name = DOM.settingsName.value.trim();
+  const email = DOM.settingsMail.value.trim();
+  const age = DOM.settingsAge.value.trim();
+  const gender = DOM.settingsGender.value;
+
+  state.profile = { name, email, age, gender };
+  saveProfile(state.profile);
+
+  const session = loadSession();
+  if (session) {
+    session.name = name;
+    saveSession(session);
+  }
+
+  updateGreeting();
+  showToast("Profile settings saved successfully!", "success");
+}
+
+function toggleAuthForms(showSignup) {
+  if (showSignup) {
+    DOM.loginForm.classList.remove("active");
+    DOM.signupForm.classList.add("active");
+    DOM.authTitle.textContent = "Create Account";
+    DOM.authSubtitle.textContent = "Sign up to start tracking your routine";
+  } else {
+    DOM.signupForm.classList.remove("active");
+    DOM.loginForm.classList.add("active");
+    updateLoginTitle();
+  }
+}
+
+function updateLoginTitle() {
+  const users = loadUsers();
+  const lastUser = users[users.length - 1];
+  if (lastUser && lastUser.name) {
+    DOM.authTitle.textContent = `Welcome back, ${lastUser.name}`;
+    DOM.authSubtitle.textContent = "Enter your password to sign in";
+    DOM.loginEmail.value = lastUser.email;
+  } else {
+    DOM.authTitle.textContent = "Welcome back";
+    DOM.authSubtitle.textContent = "Please enter your details to sign in";
+  }
+}
+
+function handleSignup(e) {
+  e.preventDefault();
+  const name = DOM.signupName.value.trim();
+  const email = DOM.signupEmail.value.trim().toLowerCase();
+  const password = DOM.signupPassword.value.trim();
+
+  if (!name || !email || !password) {
+    showToast("Please fill in all registration fields.", "error");
+    return;
+  }
+
+  const users = loadUsers();
+  if (users.some(u => u.email === email)) {
+    showToast("An account with this email already exists.", "error");
+    return;
+  }
+
+  const newUser = { name, email, password };
+  users.push(newUser);
+  saveUsers(users);
+
+  state.profile = { name, email, age: "", gender: "" };
+  saveProfile(state.profile);
+  saveSession({ name, email });
+
+  showToast("Account created successfully!", "success");
+  enterDashboard();
+}
+
+function handleLogin(e) {
+  e.preventDefault();
+  const email = DOM.loginEmail.value.trim().toLowerCase();
+  const password = DOM.loginPassword.value.trim();
+
+  if (!email || !password) {
+    showToast("Please enter both email and password.", "error");
+    return;
+  }
+
+  const users = loadUsers();
+  const matched = users.find(u => u.email === email && u.password === password);
+
+  if (!matched) {
+    showToast("Invalid email or password.", "error");
+    return;
+  }
+
+  state.profile = loadProfile();
+  if (!state.profile || !state.profile.name) {
+    state.profile = { name: matched.name, email: matched.email, age: "", gender: "" };
+    saveProfile(state.profile);
+  }
+  saveSession({ name: state.profile.name || matched.name, email: matched.email });
+
+  showToast("Welcome back!", "success");
+  enterDashboard();
+}
+
+function handleLogout() {
+  saveSession(null);
+  document.body.classList.remove("authenticated");
+  showToast("Logged out successfully.", "info");
+  toggleAuthForms(false);
+  DOM.loginPassword.value = "";
+  DOM.signupPassword.value = "";
+}
+
+function enterDashboard() {
+  document.body.classList.add("authenticated");
+  updateGreeting();
+  populateProfileInputs();
+  renderAllTaskLists();
+  updateStats();
 }
 
 function updateDate() {
@@ -756,8 +933,8 @@ function attachEvents() {
       const pending = state.tasks.filter((t) => !t.completed).length;
       showToast(
         pending > 0
-          ? `You have ${pending} pending task${pending > 1 ? "s" : ""}! 📋`
-          : "All tasks are complete! 🎉",
+          ? `You have ${pending} pending task${pending > 1 ? "s" : ""}.`
+          : "All tasks are complete!",
         pending > 0 ? "info" : "success",
       );
     });
@@ -790,6 +967,26 @@ function attachEvents() {
   if (DOM.clearAllDataBtn)
     DOM.clearAllDataBtn.addEventListener("click", clearAllData);
 
+  // Settings: profile form save
+  if (DOM.settingsForm)
+    DOM.settingsForm.addEventListener("submit", handleSettingsSubmit);
+
+  // Auth Overlay toggle buttons
+  if (DOM.showSignupBtn)
+    DOM.showSignupBtn.addEventListener("click", () => toggleAuthForms(true));
+  if (DOM.showLoginBtn)
+    DOM.showLoginBtn.addEventListener("click", () => toggleAuthForms(false));
+
+  // Auth Form submissions
+  if (DOM.signupForm)
+    DOM.signupForm.addEventListener("submit", handleSignup);
+  if (DOM.loginForm)
+    DOM.loginForm.addEventListener("submit", handleLogin);
+
+  // Logout button
+  if (DOM.logoutBtn)
+    DOM.logoutBtn.addEventListener("click", handleLogout);
+
   // Resize → close mobile sidebar
   window.addEventListener("resize", () => {
     if (window.innerWidth > 768) closeMobileSidebar();
@@ -797,46 +994,37 @@ function attachEvents() {
 }
 
 function init() {
-  // Apply saved theme
   applyTheme(loadTheme());
-
-  // Restore sidebar collapse state
   if (loadSidebarState()) DOM.appShell.classList.add("sidebar-collapsed");
-
-  // Load tasks
   state.tasks = loadTasks();
-
-  // Initial render
+  state.profile = loadProfile();
+  populateProfileInputs();
   renderAllTaskLists();
   updateStats();
   updateGreeting();
   updateDate();
   displayRandomQuote();
   setFooterYear();
-
-  // Restore last active page
   navigateTo(loadPage() || "dashboard");
 
-  // Attach all event listeners
+  const session = loadSession();
+  if (session) {
+    document.body.classList.add("authenticated");
+  } else {
+    document.body.classList.remove("authenticated");
+    toggleAuthForms(false);
+  }
+
   attachEvents();
 
-  // Auto-refresh greeting & date every minute
   setInterval(() => {
     updateGreeting();
     updateDate();
   }, 60_000);
 
-  // Rotate quotes every 30s
   setInterval(displayRandomQuote, 30_000);
-
-  console.info(
-    "%c🚀 Daily Routine Tracker v3 ",
-    "background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;font-size:13px;padding:5px 10px;border-radius:6px;font-weight:bold;",
-    `\nPremium dashboard loaded. ${state.tasks.length} task(s) in storage.`,
-  );
 }
 
-// Boot
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", init);
 } else {
