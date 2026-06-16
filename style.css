@@ -302,8 +302,6 @@ ol {
   text-transform: uppercase;
 }
 
-/* Sidebar collapse and theme switcher components removed from layout */
-
 .sidebar-nav {
   flex: 1;
   overflow-y: auto;
