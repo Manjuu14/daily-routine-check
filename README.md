@@ -1,1 +1,3 @@
 Daily Routine Check is a simple productivity web application that helps users track and manage their daily tasks and routines. The application allows users to organize activities, monitor progress, and maintain consistency in their day-to-day schedule.
+
+![Daily Routine Check Dashboard]()
